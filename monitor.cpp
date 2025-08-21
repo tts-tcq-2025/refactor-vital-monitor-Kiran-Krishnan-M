@@ -2,6 +2,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <unordered_map>
 
 using std::cout, std::flush, std::this_thread::sleep_for, std::chrono::seconds;
 
@@ -40,14 +41,15 @@ void blinkAlert() {
 }
 
 void printAlertMessage(VitalStatus status) {
-  switch (status) {
-    case VitalStatus::TEMPERATURE_CRITICAL:
-      cout << "Temperature is critical!\n"; break;
-    case VitalStatus::PULSE_CRITICAL:
-      cout << "Pulse Rate is out of range!\n"; break;
-    case VitalStatus::SPO2_CRITICAL:
-      cout << "Oxygen Saturation out of range!\n"; break;
-    default: break;
+  static const std::unordered_map<VitalStatus, const char*> messages = {
+    {VitalStatus::TEMPERATURE_CRITICAL, "Temperature is critical!\n"},
+    {VitalStatus::PULSE_CRITICAL, "Pulse Rate is out of range!\n"},
+    {VitalStatus::SPO2_CRITICAL, "Oxygen Saturation out of range!\n"}
+  };
+
+  auto it = messages.find(status);
+  if (it != messages.end()) {
+    cout << it->second;
   }
 }
 
