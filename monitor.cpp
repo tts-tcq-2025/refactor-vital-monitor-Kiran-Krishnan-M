@@ -33,6 +33,7 @@ VitalStatus checkVitals(float temperature, float pulseRate, float spo2) {
 }
 
 void blinkAlert() {
+  if (testMode) return;  // Skip blinking in test mode
   for (int i = 0; i < 6; ++i) {
     cout << "\r* " << flush;
     sleep_for(seconds(1));
