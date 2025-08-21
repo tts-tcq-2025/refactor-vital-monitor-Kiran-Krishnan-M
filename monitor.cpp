@@ -53,8 +53,6 @@ void printAlertMessage(VitalStatus status) {
     cout << it->second;
   }
 }
-
-
 bool alert(VitalStatus status) {
   bool alertTriggered = false;
 
@@ -63,6 +61,9 @@ bool alert(VitalStatus status) {
     blinkAlert();
     alertTriggered = true;
   }
+
+  return alertTriggered;
+}
 /*
 int main() {
   float temperature = 103.0;
