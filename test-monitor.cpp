@@ -19,14 +19,7 @@ TEST(MonitorTest, AllVitalsInRange) {
   EXPECT_EQ(checkVitals(98.6, 75.0, 98.0), VitalStatus::OK);
 }
 
-// Dummy usage to avoid unused function warning
-namespace {
-  void useAlertFunction() {
-    if (false) {
-      alert(VitalStatus::TEMPERATURE_CRITICAL);
-    }
-  }
-}
+
 
 
 
