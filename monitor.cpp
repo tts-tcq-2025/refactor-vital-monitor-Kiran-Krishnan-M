@@ -35,9 +35,9 @@ VitalStatus checkVitals(float temperature, float pulseRate, float spo2) {
 void blinkAlert() {
   for (int i = 0; i < 6; ++i) {
     cout << "\r* " << flush;
-    sleep_for(seconds(1));
+    sleep_for(milliseconds(1));
     cout << "\r *" << flush;
-    sleep_for(seconds(1));
+    sleep_for(milliseconds(1));
   }
 }
 
