@@ -53,16 +53,11 @@ void printAlertMessage(VitalStatus status) {
     cout << it->second;
   }
 }
-bool alert(VitalStatus status) {
-  bool alertTriggered = false;
-
+void alert(VitalStatus status) {
   if (status != VitalStatus::OK) {
     printAlertMessage(status);
     blinkAlert();
-    alertTriggered = true;
   }
-
-  return alertTriggered;
 }
 /*
 int main() {
