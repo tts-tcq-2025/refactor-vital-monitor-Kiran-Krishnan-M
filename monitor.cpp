@@ -54,13 +54,15 @@ void printAlertMessage(VitalStatus status) {
   }
 }
 
-void alert(VitalStatus status) {
+
+bool alert(VitalStatus status) {
+  bool alertTriggered = false;
+
   if (status != VitalStatus::OK) {
     printAlertMessage(status);
     blinkAlert();
+    alertTriggered = true;
   }
-  return alert;
-}
 /*
 int main() {
   float temperature = 103.0;
