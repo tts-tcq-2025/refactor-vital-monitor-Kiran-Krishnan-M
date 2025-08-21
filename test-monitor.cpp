@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include "./monitor.h"
 
-extern bool testMode;  // Declare the flag
 
 TEST(MonitorTest, NotOkWhenAnyVitalIsOffRange) {
 
@@ -13,6 +12,7 @@ TEST(MonitorTest, NotOkWhenAnyVitalIsOffRange) {
   // All vitals are within range
   EXPECT_EQ(checkVitals(98.1, 70, 98), VitalStatus::OK);
 }
+
 
 
 
