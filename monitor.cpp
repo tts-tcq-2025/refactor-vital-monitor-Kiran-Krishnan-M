@@ -25,7 +25,8 @@ VitalStatus checkVitals(float temperature, float pulseRate, float spo2) {
   };
 
   auto it = std::find_if(std::begin(checks), std::end(checks),
-    [](const Vitaln isOutOfRange(check.value, check.threshold);
+     {
+      return isOutOfRange(check.value, check.threshold);
     });
 
   return (it != std::end(checks)) ? it->status : VitalStatus::OK;
@@ -60,7 +61,6 @@ void alert(VitalStatus status) {
   }
 }
 
-// Demo usage to avoid unused function warning
 int main() {
   float temperature = 103.0;
   float pulseRate = 85.0;
