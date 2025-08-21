@@ -60,8 +60,6 @@ void alert(VitalStatus status) {
     blinkAlert();
   }
 }
-
-/*
 int main() {
   float temperature = 103.0;
   float pulseRate = 85.0;
@@ -71,4 +69,4 @@ int main() {
   alert(status);
 
   return 0;
-} */
+}
