@@ -3,6 +3,7 @@
 #include <thread>
 #include <chrono>
 #include <unordered_map>
+#include <algorithm>
 
 using std::cout, std::flush, std::this_thread::sleep_for, std::chrono::seconds;
 
@@ -17,18 +18,18 @@ struct VitalCheck {
 };
 
 VitalStatus checkVitals(float temperature, float pulseRate, float spo2) {
-  VitalCheck checks[] = {
+  const VitalCheck checks[] = {
     {temperature, {95.0, 102.0}, VitalStatus::TEMPERATURE_CRITICAL},
     {pulseRate,   {60.0, 100.0}, VitalStatus::PULSE_CRITICAL},
-    {spo2,        {90.0, 150.0}, VitalStatus::SPO2_CRITICAL}  // upper bound arbitrary
+    {spo2,        {90.0, 150.0}, VitalStatus::SPO2_CRITICAL}
   };
 
-  for (const auto& check : checks) {
-    if (isOutOfRange(check.value, check.threshold)) {
-      return check.status;
-    }
-  }
-  return VitalStatus::OK;
+  auto it = std::find_if(std::begin(checks), std::end(checks),
+     {
+      return isOutOfRange(check.value, check.threshold);
+    });
+
+  return (it != std::end(checks)) ? it->status : VitalStatus::OK;
 }
 
 void blinkAlert() {
