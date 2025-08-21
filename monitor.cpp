@@ -24,14 +24,12 @@ VitalStatus checkVitals(float temperature, float pulseRate, float spo2) {
     {spo2,        {90.0, 150.0}, VitalStatus::SPO2_CRITICAL}
   };
 
-const auto it = std::find_if(std::begin(checks), std::end(checks),
-    [](const VitalCheck& check) {
-        return isOutOfRange(check.value, check.threshold);
-    });
-if (it != std::end(checks)) {
-    return it->status;
-}
-return VitalStatus::OK;
+    auto it = std::find_if(std::begin(checks), std::end(checks),
+        [](const VitalCheck& check) {
+            return isOutOfRange(check.value, check.threshold);
+        });
+
+    return (it != std::end(checks)) ? it->status : VitalStatus::OK;
 }
 
 void blinkAlert() {
