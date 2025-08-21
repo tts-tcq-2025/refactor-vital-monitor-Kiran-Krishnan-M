@@ -19,16 +19,7 @@ TEST(MonitorTest, AllVitalsInRange) {
   EXPECT_EQ(checkVitals(98.6, 75.0, 98.0), VitalStatus::OK);
 }
 
-int main() {
-  float temperature = 103.0;
-  float pulseRate = 85.0;
-  float spo2 = 95.0;
 
-  VitalStatus status = checkVitals(temperature, pulseRate, spo2);
-  alert(status);
-
-  return 0;
-}
 
 
 
