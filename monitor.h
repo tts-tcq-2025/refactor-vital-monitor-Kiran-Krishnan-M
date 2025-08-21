@@ -15,7 +15,8 @@ struct VitalThreshold {
 
 bool isOutOfRange(float value, const VitalThreshold& threshold);
 VitalStatus checkVitals(float temperature, float pulseRate, float spo2);
-bool alert(VitalStatus status);
+void alert(VitalStatus status);
+
 
 
 
