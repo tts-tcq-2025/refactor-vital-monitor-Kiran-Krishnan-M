@@ -11,7 +11,6 @@ constexpr float PULSE_HIGH = 100.0f;
 constexpr float SPO2_MIN = 90.0f;
 constexpr int OK = 1;
 constexpr int NOT_OK = 0;
-constexpr float tolerance = TEMP_HIGH * 0.015f;  // 1.5% of upper limit
 
 void blinkAlert() {
   for (int i = 0; i < 6; i++) {
@@ -23,16 +22,6 @@ void blinkAlert() {
   cout << "\r  \r" << flush;  // Clear line after alert
 }
 
-void temp_hypothermia(float temperature) {
-    if ((temperature >= TEMP_LOW && temperature <= TEMP_LOW + tolerance)) {
-        cout << "Warning: Approaching hypothermia\n";
-    }
-}
-void temp_hyperthermia(float temperature) {
-    if ((temperature >= TEMP_HIGH - tolerance && temperature <= TEMP_HIGH)) {
-        cout << "Warning: Approaching hyperthermia\n";
-    }
-}
 
 int tempOk(float temperature) {
     if (temperature > TEMP_HIGH || temperature < TEMP_LOW) {
@@ -40,8 +29,6 @@ int tempOk(float temperature) {
         blinkAlert();
         return NOT_OK;
     }
-    temp_hypothermia(temperature);
-    temp_hyperthermia(temperature);
     return OK;
 }
 
