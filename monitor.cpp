@@ -34,7 +34,7 @@ int tempOk(float temperature) {
 
 int pulseRateOk(float pulseRate) {
   if (pulseRate < PULSE_LOW || pulseRate > PULSE_HIGH) {
-    cout << "Pulse Rate is out of range!\n";
+      cout << "Temperature is critical!\n";
     blinkAlert();
     return NOT_OK;
   }
