@@ -1,21 +1,32 @@
-// monitor.h
-#pragma once
+#ifndef MONITOR_H
+#define MONITOR_H
 
-enum class VitalStatus {
-  OK,
-  TEMPERATURE_CRITICAL,
-  PULSE_CRITICAL,
-  SPO2_CRITICAL
-};
+#include <string>
 
+// ---------- Structures ----------
 struct VitalThreshold {
   float min;
-  float max;
+  float max;  // use +infinity if no max check needed
 };
 
+struct VitalStatus {
+  std::string name;
+  float value;
+  VitalThreshold threshold;
+};
+
+// ---------- Pure Functions ----------
 bool isOutOfRange(float value, const VitalThreshold& threshold);
-VitalStatus checkVitals(float temperature, float pulseRate, float spo2);
-void alert(VitalStatus status);
+std::string checkVital(const VitalStatus& vital);
+
+// ---------- I/O Functions ----------
+void blinkAlert(const std::string& message);
+
+// ---------- Monitoring Function ----------
+bool vitalsOk(float temperature, float pulseRate, float spo2);
+
+#endif // MONITOR_H
+
 
 
 
