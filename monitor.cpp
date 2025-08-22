@@ -20,6 +20,8 @@ std::string checkVital(const VitalStatus& vital) {
 }
 
 // ---------- I/O Functions ----------
+#ifndef UNIT_TEST
+// Production version: blinking alert with delays
 void blinkAlert(const std::string& message) {
   cout << message << "\n";
   for (int i = 0; i < 6; i++) {
@@ -30,6 +32,12 @@ void blinkAlert(const std::string& message) {
   }
   cout << "\n";
 }
+#else
+// Unit test version: no sleep (fast execution)
+void blinkAlert(const std::string& message) {
+  cout << "[ALERT] " << message << "\n";
+}
+#endif
 
 // ---------- Monitoring Function ----------
 bool vitalsOk(float temperature, float pulseRate, float spo2) {
