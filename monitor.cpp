@@ -1,64 +1,82 @@
-#include "monitor.h"
-#include <iostream>
+#include "./monitor.h"
+#include <assert.h>
 #include <thread>
 #include <chrono>
-#include <unordered_map>
-#include <limits>
+#include <iostream>
 
 using std::cout, std::flush, std::this_thread::sleep_for, std::chrono::seconds;
 
-// ---------- Pure Functions ----------
-bool isOutOfRange(float value, const VitalThreshold& threshold) {
-  return value < threshold.min || value > threshold.max;
-}
+constexpr float TEMP_LOW   = 95.0f;
+constexpr float TEMP_HIGH  = 102.0f;
+constexpr float PULSE_LOW  = 60.0f;
+constexpr float PULSE_HIGH = 100.0f;
+constexpr float SPO2_MIN   = 90.0f;
 
-std::string checkVital(const VitalStatus& vital) {
-  if (isOutOfRange(vital.value, vital.threshold)) {
-    return vital.name + " is out of range!";
-  }
-  return "";
-}
+constexpr float tolerance  = TEMP_HIGH * 0.015f;  // 1.5% of upper limit
 
-// ---------- I/O Functions ----------
 #ifndef UNIT_TEST
-// Production version: blinking alert with delays
-void blinkAlert(const std::string& message) {
-  cout << message << "\n";
+// ---------- Production Alert ----------
+void blinkAlert() {
   for (int i = 0; i < 6; i++) {
     cout << "\r* " << flush;
     sleep_for(seconds(1));
     cout << "\r *" << flush;
     sleep_for(seconds(1));
   }
-  cout << "\n";
+  cout << "\r  \r" << flush;  // Clear line after alert
 }
 #else
-// Unit test version: no sleep (fast execution)
-void blinkAlert(const std::string& message) {
-  cout << "[ALERT] " << message << "\n";
+// ---------- Test Alert (no delay) ----------
+void blinkAlert() {
+  cout << "[ALERT triggered]\n";
 }
 #endif
 
-// ---------- Monitoring Function ----------
-bool vitalsOk(float temperature, float pulseRate, float spo2) {
-  std::unordered_map<std::string, VitalThreshold> thresholds = {
-      {"Temperature", {95, 102}},
-      {"Pulse Rate", {60, 100}},
-      {"Oxygen Saturation", {90, std::numeric_limits<float>::infinity()}} // only min check
-  };
+// ---------- Temperature Check ----------
+void temp_hypothermia(float temperature) {
+  if (temperature >= TEMP_LOW && temperature <= TEMP_LOW + tolerance) {
+    cout << "Warning: Approaching hypothermia\n";
+  }
+}
 
-  VitalStatus vitals[] = {
-      {"Temperature", temperature, thresholds["Temperature"]},
-      {"Pulse Rate", pulseRate, thresholds["Pulse Rate"]},
-      {"Oxygen Saturation", spo2, thresholds["Oxygen Saturation"]}
-  };
+void temp_hyperthermia(float temperature) {
+  if (temperature >= TEMP_HIGH - tolerance && temperature <= TEMP_HIGH) {
+    cout << "Warning: Approaching hyperthermia\n";
+  }
+}
 
-  for (const auto& vital : vitals) {
-    std::string msg = checkVital(vital);
-    if (!msg.empty()) {
-      blinkAlert(msg);
-      return false;
-    }
+bool tempOk(float temperature) {
+  if (temperature > TEMP_HIGH || temperature < TEMP_LOW) {
+    cout << "Temperature is critical!\n";
+    blinkAlert();
+    return false;
+  }
+  temp_hypothermia(temperature);
+  temp_hyperthermia(temperature);
+  return true;
+}
+
+// ---------- Pulse Check ----------
+bool pulseRateOk(float pulseRate) {
+  if (pulseRate < PULSE_LOW || pulseRate > PULSE_HIGH) {
+    cout << "Pulse Rate is out of range!\n";
+    blinkAlert();
+    return false;
   }
   return true;
+}
+
+// ---------- SpO2 Check ----------
+bool spo2Ok(float spo2) {
+  if (spo2 < SPO2_MIN) {
+    cout << "Oxygen Saturation out of range!\n";
+    blinkAlert();
+    return false;
+  }
+  return true;
+}
+
+// ---------- Combined Monitoring ----------
+bool vitalsOk(float temperature, float pulseRate, float spo2) {
+  return tempOk(temperature) && pulseRateOk(pulseRate) && spo2Ok(spo2);
 }
